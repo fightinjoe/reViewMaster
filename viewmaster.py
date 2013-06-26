@@ -10,12 +10,19 @@ from pprint import pprint
 from time import sleep
 
 commandFilePaths = {
-    'exit' : '/tmp/viewmaster.exit'
+    'exit' : '/tmp/viewmaster.exit',
+    'next' : '/tmp/viewmaster.next'
 }
 
 commands = {
-    'exit' : False
+    'exit' : False,
+    'next' : False
 }
+
+playlist = [
+    '/home/pi/media/left.mp4',
+    '/home/pi/media/intro.mp4'
+]
 
 player = False
 
@@ -39,14 +46,18 @@ def getLength(filename):
 
 def readCommands():
     # check to see if there's an exit command
-    try:
-        open(commandFilePaths['exit'])
-        os.remove(commandFilePaths['exit'])
-        commands['exit'] = True
-        if player: player.stop()
-    except IOError:
-        1
-        # no exit command yet.  Continue to loop
+    def check(key, fn):
+        try:
+            open(commandFilePaths[key])
+            os.remove(commandFilePaths[key])
+            commands[key] = True
+            fn(key)
+        except IOError:
+            1
+            # no exit command yet.  Continue to loop
+
+    check('exit', lambda key: player and player.stop() )
+    check('next', lambda key: player and player.next() )
 
     threading.Timer(1, readCommands).start()    
 
@@ -58,9 +69,6 @@ class OMXPlayer2(OMXPlayer):
 
     def _get_position(self):
         while True:
-            if( commands['exit'] ):
-                self.stop()
-
             index = self._process.expect([self._STATUS_REXP,
                                             pexpect.TIMEOUT,
                                             pexpect.EOF,
@@ -99,8 +107,18 @@ class LoopPlayer():
     filename = ''
     timer = False
 
-    def __init__(self, filename):
+    def __init__(self, filename=''):
         print "Initializing " + filename
+
+        self.setup(filename)
+
+    def setup(self, filename=''):
+        if not filename:
+            filename = playlist.pop(0)
+            playlist.append(filename)
+
+        print playlist
+
         self.filename = filename
 
         # set the duration
@@ -137,11 +155,16 @@ class LoopPlayer():
             self.timer = threading.Timer(self.duration - 0.5, self.loop)
             self.timer.start()
 
-    def stop(self):
+    def stop(self, exit=True):
         if self.timer: self.timer.cancel()
         self.videos[0].stop()
         self.videos[1].stop()
-        sys.exit()
+        
+        if exit: sys.exit()
+
+    def next(self):
+        self.stop(exit=False)
+        self.setup()
 
 readCommands()
-player = LoopPlayer('/home/pi/media/left.mp4')
+player = LoopPlayer()
