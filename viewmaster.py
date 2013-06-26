@@ -1,13 +1,13 @@
 import subprocess
 import re
-import pexpect
 import threading
 import os
 import sys
 
-from pyomxplayer import OMXPlayer
 from pprint import pprint
 from time import sleep
+
+from omxplayer2 import OMXPlayer2
 
 commandFilePaths = {
     'exit' : '/tmp/viewmaster.exit',
@@ -20,8 +20,8 @@ commands = {
 }
 
 playlist = [
-    '/home/pi/media/left.mp4',
-    '/home/pi/media/intro.mp4'
+    '/home/pi/media/mom.mov',
+    '/home/pi/media/left.mp4'
 ]
 
 player = False
@@ -60,46 +60,6 @@ def readCommands():
     check('next', lambda key: player and player.next() )
 
     threading.Timer(1, readCommands).start()    
-
-class OMXPlayer2(OMXPlayer):
-    # Instance variables
-
-    # Set to true to pause the video.  Useful when initializing the video
-    queue_pause = False
-
-    def _get_position(self):
-        while True:
-            index = self._process.expect([self._STATUS_REXP,
-                                            pexpect.TIMEOUT,
-                                            pexpect.EOF,
-                                            self._DONE_REXP])
-
-            if index == 0:
-                # Movie starts
-                if self.queue_pause:
-                    self.toggle_pause()
-                    self.queue_pause = False
-                continue
-            if index == 1:
-                continue
-            elif index == 2:
-                break
-            elif index == 3:
-                break
-            else:
-                self.position = float(self._process.match.group(1))
-            
-            sleep(0.05)
-
-    def rewind(self, start_playback=False):
-        self.stop()
-
-        self.__init__(mediafile=self.mediafile, args="-l 0.2")
-
-        if not start_playback:
-            self.queue_pause = True
-
-        return
 
 class LoopPlayer():
     duration = 0
