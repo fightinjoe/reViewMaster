@@ -1,0 +1,84 @@
+<!--
+
+HTML file for generating blocks of color.  Useful for finding individual
+colors that the RGB sensor can uniquely identify so that we might uniquely
+address each of the videos for a given set of discs.
+
+-->
+
+<html>
+<head>
+  <title></title>
+  <style type="text/css">
+    body, ul, li {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    li {
+      width: 60px;
+      height: 60px;
+      display: inline-block;
+      border: 10px solid White;
+      font-size: 11px;
+      color: white;
+      font-family: sans-serif;
+      padding: 3px;
+    }
+
+    ul {
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+
+</body>
+<script type="text/javascript">
+
+
+function printColors( fn ) {
+  var step = parseInt(256/8)
+
+  for(var i=0; i<8; i++) {
+    var ul = document.createElement('ul');
+    document.querySelector('body').appendChild(ul);
+
+    for(var j=0; j<8; j++) {
+      var li = document.createElement('li');
+
+      var array = fn(i,j);
+      li.style.background = 'rgb('+array.map(function(x){return step*x}).join(',')+')';
+      ul.appendChild(li);
+      li.innerHTML = array.join(',');
+    }
+  }
+}
+
+printColors( function(i,j) {
+  return [(8-i),i,j];
+});
+
+printColors( function(i,j) {
+  return [j,(8-i),i];
+});
+
+printColors( function(i,j) {
+  return [i,j,(8-i)];
+});
+
+printColors( function(i,j) {
+  return [j,i,i];
+});
+
+printColors( function(i,j) {
+  return [i,j,i];
+});
+
+printColors( function(i,j) {
+  return [i,i,j];
+});
+
+</script>
+</html>
