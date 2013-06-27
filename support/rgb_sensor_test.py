@@ -1,6 +1,12 @@
 #!/usr/bin/python
+
+import sys
+
+sys.path.insert(0, '..')
+
 from time import sleep
-from Adafruit_TCS34725 import TCS34725
+# from lib.Adafruit_I2C import TCS34725
+from lib.Adafruit_TCS34725 import TCS34725
 
 # ===========================================================================
 # Example Code
