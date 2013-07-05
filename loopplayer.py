@@ -1,12 +1,11 @@
 import subprocess
 import os
 import re
-import threading
 import sys
 
 from omxplayer2 import OMXPlayer2
-from pprint import pprint
 from time import sleep
+from threading import Timer
 
 
 commandFilePaths = {
@@ -57,7 +56,7 @@ def readCommands():
     check('exit', lambda key: player and player.stop() )
     check('next', lambda key: player and player.next() )
 
-    threading.Timer(1, readCommands).start() 
+    Timer(1, readCommands).start() 
 
 #
 #  LoopPlayer is a playlist queue that will infinitely loop the currently
@@ -96,6 +95,7 @@ class LoopPlayer():
         readCommands()
 
     def setup(self):
+        print 'running setup'
         filename = self.playlist.pop(0)
         self.playlist.append(filename)
 
@@ -106,41 +106,41 @@ class LoopPlayer():
         print "-- Duration: " + str(self.duration)
 
         # create the instance that will play next
-        vid1 = OMXPlayer2(filename);
+        vid1 = OMXPlayer2(filename)
+        # vid1 = OMXPlayer2('/home/pi/media/test.apple.2.mp4')
         vid1.queue_pause = True
 
         # create the instance that will play now and start playing
-        vid2 = OMXPlayer2(filename);
+        vid2 = OMXPlayer2(filename)
+        # vid2 = OMXPlayer2('/home/pi/media/test.banana.2.mp4')
+        vid2.queue_pause = True
 
         self.videos = [vid1, vid2]
 
         # call loop()
-        try:
-            sleep(self.duration + 2)
-            self.loop()
-        except (KeyboardInterrupt, SystemExit):
-            print "Keyboard Interrupt - stopping"
-            self.stop()
+        Timer(1, self.loop).start()
 
     def loop(self):
         print "Looping"
-        # play the next video
-        next = self.videos.pop(0)
-        next.toggle_pause()
-        self.videos.append(next)
-
-        # set now to be next
-        self.videos[0].rewind(start_playback=False)
-
-        # sleep for the duration
-        if self.timer: self.timer.cancel()
 
         if not commands['exit']:
-            self.timer = threading.Timer(self.duration - 0.5, self.loop)
+            self.timer = Timer(self.duration - 0.5, self.loop)
             self.timer.start()
 
+        now = self.videos[0]
+        next = self.videos[1]
+
+        next.toggle_pause()
+        now.stop()
+        now.rewind(start_playback=False)
+
+        # reorder the videos
+        self.videos.append(self.videos.pop(0))
+
     def stop(self, exit=True):
+        print 'stopping loop player'
         if self.timer: self.timer.cancel()
+
         self.videos[0].stop()
         self.videos[1].stop()
         
