@@ -124,15 +124,16 @@ class LoopPlayer():
         print "Looping"
 
         if not commands['exit']:
-            self.timer = Timer(self.duration - 0.5, self.loop)
+            self.timer = Timer(self.duration - 0.2, self.loop)
             self.timer.start()
 
         now = self.videos[0]
         next = self.videos[1]
 
         next.toggle_pause()
-        now.stop()
-        now.rewind(start_playback=False)
+        # now.stop()
+        now.restart(start_playback=False)
+        # now.rewind()
 
         # reorder the videos
         self.videos.append(self.videos.pop(0))

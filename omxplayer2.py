@@ -73,8 +73,8 @@ class OMXPlayer2(OMXPlayer):
             self.timer = Timer(0.05, self._get_position)
             self.timer.start()
 
-    def rewind(self, start_playback=False):
-        print 'rewinding'
+    def restart(self, start_playback=False):
+        print 'restarting'
         self.stop()
 
         self.__init__(mediafile=self.mediafile, args="-l 0.2")
@@ -82,6 +82,11 @@ class OMXPlayer2(OMXPlayer):
         self.queue_pause = not start_playback
 
         return
+
+    def rewind(self):
+        print 'rewinding'
+        self.toggle_pause()
+        self.seek_backward_600()
 
     def stop(self):
         print 'stopping'
