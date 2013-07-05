@@ -21,7 +21,8 @@ commands = {
 
 player = False;
 
-# Returns the duration of the movie in seconds
+# Returns the duration of the movie in seconds.  Requires that ffprobe is
+# installed (part of the ffmpeg package)
 def getLength(filename):
     result = subprocess.Popen(["ffprobe", filename],
                                stdout = subprocess.PIPE, stderr = subprocess.STDOUT)
@@ -39,6 +40,8 @@ def getLength(filename):
 
     return seconds
 
+# Method for checking the filesystem to see if any commands have been
+# left in the /tmp directory, such as /tmp/viewmaster.exit.
 def readCommands():
     # check to see if there's an exit command
     def check(key, fn):
