@@ -1,8 +1,11 @@
+#!/usr/bin/python
+
 # Extends https://github.com/KenT2/pyomxplayer
 # to provide pause-on-init functionality, since the start_playback
 # parameter doesn't seem to be respected by OMXPlayer
 
 import pexpect
+from threading import Thread
 
 from pyomxplayer import OMXPlayer
 
@@ -50,3 +53,18 @@ class OMXPlayer2(OMXPlayer):
 
         return
 
+class OMXPlayerThread(thread):
+    player = None
+    queue_pause = False
+
+    def __init__(self, filename, queue_pause=False):
+        self.queue_pause = queue_pause
+        Thread.__init__(self)
+        self.player = OMXPlayer2(filename)
+        self.player.queue_pause = self.queue_pause
+
+    def stop(self):
+        self.player.stop()
+
+    def rewind(self):
+        self.player.rewind(start_playback = not self.queue_pause)
