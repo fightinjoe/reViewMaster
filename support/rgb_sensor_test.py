@@ -21,15 +21,16 @@ sleep(1)
 def pp(raw, key):
     return int(raw[key]/2/100)
 
+triple = (0,0,0)
+
 try:
   while True:
-    # print tcs.getRawData()
     raw = tcs.getRawData()
-    out = {
-        'red' : pp(raw,'r'),
-        'green' : pp(raw,'g'),
-        'blue' : pp(raw,'b')
-    } 
-    print out
+    out = ( pp(raw,'r'), pp(raw,'g'), pp(raw,'b') )
+
+    if out != triple: print out
+
+    triple = out
+
 except (KeyboardInterrupt, SystemExit):
   tcs.disable()

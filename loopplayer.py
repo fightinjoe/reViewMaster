@@ -56,14 +56,11 @@ def readCommands():
     check('exit', lambda key: player and player.stop() )
     check('next', lambda key: player and player.next() )
 
-    Timer(1, readCommands).start() 
+    Timer(1, readCommands).start()
 
 #
-#  LoopPlayer is a playlist queue that will infinitely loop the currently
-#  playing video until the command to move to the next video in the playlist
-#  is issued.  When advancing to the next video, the currently playing video
-#  is appended to the end of the playlist so that the playlist, too, is
-#  infinite.
+#  LoopPlayer is a video player that will infinitely loop the currently
+#  playing video 
 #
 #  Requires ffprobe (part of ffmpeg) in order to read the duration of the video
 #
@@ -73,9 +70,6 @@ class LoopPlayer():
     # the time in seconds of the current video being played
     duration = 0
 
-    # the array of videos in the playlist
-    playlist = []
-
     # the current OMXPlayer2 objects that are looping the video
     videos = []
 
@@ -84,10 +78,10 @@ class LoopPlayer():
 
     timer = False
 
-    def __init__(self, playlist=[]):
-        print "Initializing LoopPlayer with " + str(len(playlist)) + " videos"
+    def __init__(self, filename):
+        print "Initializing LoopPlayer with " + filename
 
-        self.playlist = playlist
+        self.filename = filename
 
         self.setup()
 
@@ -96,35 +90,32 @@ class LoopPlayer():
 
     def setup(self):
         print 'running setup'
-        filename = self.playlist.pop(0)
-        self.playlist.append(filename)
-
-        self.filename = filename
 
         # set the duration
-        self.duration = getLength(filename)
+        self.duration = getLength(self.filename)
         print "-- Duration: " + str(self.duration)
 
         # create the instance that will play next
-        vid1 = OMXPlayer2(filename)
+        vid1 = OMXPlayer2(self.filename)
         # vid1 = OMXPlayer2('/home/pi/media/test.apple.2.mp4')
         vid1.queue_pause = True
 
         # create the instance that will play now and start playing
-        vid2 = OMXPlayer2(filename)
+        vid2 = OMXPlayer2(self.filename)
         # vid2 = OMXPlayer2('/home/pi/media/test.banana.2.mp4')
         vid2.queue_pause = True
 
         self.videos = [vid1, vid2]
 
         # call loop()
-        Timer(1, self.loop).start()
+        Timer(1, self._loop).start()
 
-    def loop(self):
+    def _loop(self):
         print "Looping"
 
+        # Schedule the timer to start for the next video
         if not commands['exit']:
-            self.timer = Timer(self.duration - 0.2, self.loop)
+            self.timer = Timer(self.duration - 0.2, self._loop)
             self.timer.start()
 
         now = self.videos[0]
@@ -146,7 +137,3 @@ class LoopPlayer():
         self.videos[1].stop()
         
         if exit: sys.exit()
-
-    def next(self):
-        self.stop(exit=False)
-        self.setup()

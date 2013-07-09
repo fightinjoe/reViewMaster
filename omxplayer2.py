@@ -70,7 +70,8 @@ class OMXPlayer2(OMXPlayer):
             self.position = float(self._process.match.group(1))
         
         if( not self.stopCommand ):
-            self.timer = Timer(0.05, self._get_position)
+            # self.timer = Timer(0.05, self._get_position)
+            self.timer = Timer(0.25, self._get_position)
             self.timer.start()
 
     def restart(self, start_playback=False):
