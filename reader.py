@@ -9,7 +9,7 @@ sys.path.insert(0, '..')
 
 from threading import Timer
 from lib.Adafruit_TCS34725 import TCS34725
-from loopplayer import LoopPlayer
+from fastplayer import FastPlayer
 
 class Reader():
 
@@ -34,12 +34,12 @@ class Reader():
         self.tcs = TCS34725(integrationTime=0xEB, gain=0x01)
         self.tcs.setInterrupt(False)
 
-        self.player = LoopPlayer( Reader.playlist[0][1] )
+        self.player = FastPlayer( Reader.playlist[0][1] )
 
         self.timer = Timer(1, self._monitor)
         self.timer.start()
 
-    def _normalize(raw):
+    def _normalize(self, raw):
         denominator = 200
 
         return (
@@ -48,7 +48,7 @@ class Reader():
             int(raw['b'] / denominator)
         )
 
-    def _lookupPlaylistByTuple(t):
+    def _lookupPlaylistByTuple(self, t):
         for video in Reader.playlist:
             if video[0] == t: return video[1]
 
@@ -70,10 +70,10 @@ class Reader():
             print(self.onNewMedia)
             self.current = norm
             # if self.onNewMedia: self.onNewMedia(video)
-            self.player.stop(exit=False)
-            self.player = LoopPlayer( video )
+            self.player.stop()
+            self.player = FastPlayer( video )
 
-        self.timer.stop()
+        self.timer.cancel()
         self.timer = Timer(0.5, self._monitor)
         self.timer.start()
 
@@ -110,17 +110,17 @@ Reader.playlist = [
     #     [ (5,6,8), 'media/TALKING_1.mov']
 
 
-    [ (4,3,3), '/home/pi/media/test.apple.mp4' ],
-        [ (3,3,3), '/home/pi/media/test.apple.mp4'],
-    [ (6,4,3), '/home/pi/media/test.banana.2.mp4'],
-        [ (6,4,4), '/home/pi/media/test.banana.2.mp4'],
-    [ (9,3,3), '/home/pi/media/test.cherry.mp4'],
-        [ (8,3,3), '/home/pi/media/test.cherry.mp4'],
-    [ (9,3,2), '/home/pi/media/test.apple.mp4'],
-        [ (8,3,2), '/home/pi/media/test.apple.mp4'],
-    [ (3,2,2), '/home/pi/media/test.banana.2.mp4'],
-        [ (3,3,2), '/home/pi/media/test.banana.2.mp4'],
-    [ (10,5,4), '/home/pi/media/test.cherry.mp4'],
-    [ (9,6,5), '/home/pi/media/test.apple.mp4'],
-        [ (8,6,5), '/home/pi/media/test.apple.mp4']
+    [ (4,3,3),     '/home/pi/src/viewmaster/media/disk_1/SHAKE.h264' ],
+        [ (3,3,3), '/home/pi/src/viewmaster/media/disk_1/SHAKE.h264'],
+    [ (6,4,3),     '/home/pi/src/viewmaster/media/disk_1/HATS.h264'],
+        [ (6,4,4), '/home/pi/src/viewmaster/media/disk_1/HATS.h264'],
+    [ (9,3,3),     '/home/pi/src/viewmaster/media/disk_1/WOK.h264'],
+        [ (8,3,3), '/home/pi/src/viewmaster/media/disk_1/WOK.h264'],
+    [ (9,3,2),     '/home/pi/src/viewmaster/media/disk_1/TARPS.h264'],
+        [ (8,3,2), '/home/pi/src/viewmaster/media/disk_1/TARPS.h264'],
+    [ (3,2,2),     '/home/pi/src/viewmaster/media/disk_1/BQE.h264'],
+        [ (3,3,2), '/home/pi/src/viewmaster/media/disk_1/BQE.h264'],
+    [ (10,5,4),    '/home/pi/src/viewmaster/media/disk_1/wipers.A-L.h264'],
+    [ (9,6,5),     '/home/pi/src/viewmaster/media/disk_1/TALKING_1.h264'],
+        [ (8,6,5), '/home/pi/src/viewmaster/media/disk_1/TALKING_1.h264']
 ]
