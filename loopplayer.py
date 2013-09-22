@@ -1,3 +1,9 @@
+# Python wrapper to attempt to loop video using OMXPlayer2.
+# This is achieved by running two separate OMXPlayer2 instances that
+# trigger playback in one another.  Due to the memory footprint of
+# OMXPlayer this approach is not suggested and does not produce optimal
+# playback rates.  Use fastplayer.py as an alternative.
+
 import subprocess
 import os
 import re

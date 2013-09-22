@@ -1,14 +1,10 @@
-from loopplayer import LoopPlayer
+from reader import Reader
 
-playlist = [
-    '/home/pi/media/mom.mov',
-    '/home/pi/media/left.mp4'
-]
-
-player = LoopPlayer(playlist)
+r = Reader()
 
 try:
   while True:
-    True
+      True
 except (KeyboardInterrupt, SystemExit):
-  player.stop()
+  r.stop()
+
