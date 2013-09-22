@@ -79,8 +79,8 @@ class Reader():
 
 
     def stop(self):
-        if(self.timer): self.timer.stop()
-        self.player.stop
+        if(self.timer): self.timer.cancel()
+        self.player.stop()
         self.tcs.disable()
 
 Reader.playlist = [
@@ -122,5 +122,28 @@ Reader.playlist = [
         [ (3,3,2), '/home/pi/src/viewmaster/media/disk_1/BQE.h264'],
     [ (10,5,4),    '/home/pi/src/viewmaster/media/disk_1/wipers.A-L.h264'],
     [ (9,6,5),     '/home/pi/src/viewmaster/media/disk_1/TALKING_1.h264'],
-        [ (8,6,5), '/home/pi/src/viewmaster/media/disk_1/TALKING_1.h264']
+        [ (8,6,5), '/home/pi/src/viewmaster/media/disk_1/TALKING_1.h264'],
+
+
+    # Disk 2
+    [ (7,9,5),     '/home/pi/src/viewmaster/media/disk_2/AARON.h264' ],
+    [ (5,7,4),     '/home/pi/src/viewmaster/media/disk_2/DOG.h264' ],
+        [ (5,7,3), '/home/pi/src/viewmaster/media/disk_2/DOG.h264' ],
+    [ (5,8,4),     '/home/pi/src/viewmaster/media/disk_2/FISH.h264' ],
+        [ (6,8,4), '/home/pi/src/viewmaster/media/disk_2/FISH.h264' ],
+    [ (3,5,3),     '/home/pi/src/viewmaster/media/disk_2/KID.h264' ],
+    [ (5,5,3),     '/home/pi/src/viewmaster/media/disk_2/PAR.h264' ],
+    [ (10,5,3),     '/home/pi/src/viewmaster/media/disk_2/TOYDOGS.h264' ],
+    [ (13,13,6),     '/home/pi/src/viewmaster/media/disk_2/VMaker.h264' ],
+        [ (13,12,5),     '/home/pi/src/viewmaster/media/disk_2/VMaker.h264' ],
+
+
+    # Disk 3
+    [ (4,4,4),     '/home/pi/src/viewmaster/media/disk_3/FOUNTAIN.h264' ],
+    [ (4,5,4),     '/home/pi/src/viewmaster/media/disk_3/GEESE_1.h264' ],
+    [ (4,3,4),     '/home/pi/src/viewmaster/media/disk_3/HEADPHONES.h264' ],
+    [ (3,4,3),     '/home/pi/src/viewmaster/media/disk_3/MOM_AND_KIDS.h264' ],
+    [ (6,6,4),     '/home/pi/src/viewmaster/media/disk_3/RUNNING.h264' ],
+    [ (6,10,8),     '/home/pi/src/viewmaster/media/disk_3/SUNSET.h264' ],
+    [ (3,4,4),     '/home/pi/src/viewmaster/media/disk_3/YACHTS.h264' ]
 ]

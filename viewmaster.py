@@ -1,8 +1,8 @@
 from reader import Reader
 
-r = Reader()
-
 try:
+  r = Reader()
+
   while True:
       True
 except (KeyboardInterrupt, SystemExit):
